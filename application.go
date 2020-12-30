@@ -27,7 +27,7 @@ type (
 		builtAt   time.Time
 		startedAt time.Time
 		host      string
-		devel     bool
+		devel     int
 	}
 )
 
@@ -65,13 +65,13 @@ func (a *Application) StartedAt() time.Time { return a.startedAt }
 func (a *Application) Host() string { return a.host }
 
 // Devel AFAIRE.
-func (a *Application) Devel() bool { return a.devel }
+func (a *Application) Devel() int { return a.devel }
 
 // Initialize AFAIRE.
 func (a *Application) Initialize() error {
 	s, ok := os.LookupEnv(strings.ToUpper(a.name) + "_DEVEL")
 	if ok {
-		devel, err := strconv.ParseBool(s)
+		devel, err := strconv.Atoi(s)
 		if err != nil {
 			return err
 		}
