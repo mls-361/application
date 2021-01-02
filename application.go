@@ -47,29 +47,52 @@ func New(name, version, builtAt string) *Application {
 }
 
 // ID AFAIRE.
-func (a *Application) ID() string { return a.id }
+func (a *Application) ID() string {
+	return a.id
+}
 
 // Name AFAIRE.
-func (a *Application) Name() string { return a.name }
+func (a *Application) Name() string {
+	return a.name
+}
 
 // Version AFAIRE.
-func (a *Application) Version() string { return a.version }
+func (a *Application) Version() string {
+	return a.version
+}
 
 // BuiltAt AFAIRE.
-func (a *Application) BuiltAt() time.Time { return a.builtAt }
+func (a *Application) BuiltAt() time.Time {
+	return a.builtAt
+}
 
 // StartedAt AFAIRE.
-func (a *Application) StartedAt() time.Time { return a.startedAt }
+func (a *Application) StartedAt() time.Time {
+	return a.startedAt
+}
 
-// Host AFAIRE.
-func (a *Application) Host() string { return a.host }
+// LookupEnv AFAIRE.
+func (a *Application) LookupEnv(suffix string) (string, bool) {
+	return os.LookupEnv(strings.ToUpper(a.name) + "_" + suffix)
+}
 
-// Devel AFAIRE.
-func (a *Application) Devel() int { return a.devel }
+// OnError AFAIRE.
+func (a *Application) OnError(err error) error {
+	fmt.Fprintf( ///////////////////////////////////////////////////////////////////////////////////////////////////////
+		os.Stderr,
+		"Error: application=%s version=%s builtAt=%s >>> %s\n",
+		a.name,
+		a.version,
+		a.builtAt.String(),
+		err,
+	)
+
+	return err
+}
 
 // Initialize AFAIRE.
 func (a *Application) Initialize() error {
-	s, ok := os.LookupEnv(strings.ToUpper(a.name) + "_DEVEL")
+	s, ok := a.LookupEnv("DEVEL")
 	if ok {
 		devel, err := strconv.Atoi(s)
 		if err != nil {
@@ -89,18 +112,14 @@ func (a *Application) Initialize() error {
 	return nil
 }
 
-// OnError AFAIRE.
-func (a *Application) OnError(err error) error {
-	fmt.Fprintf( ///////////////////////////////////////////////////////////////////////////////////////////////////////
-		os.Stderr,
-		"Error: application=%s version=%s builtAt=%s >>> %s\n",
-		a.name,
-		a.version,
-		a.builtAt.String(),
-		err,
-	)
+// Devel AFAIRE.
+func (a *Application) Devel() int {
+	return a.devel
+}
 
-	return err
+// Host AFAIRE.
+func (a *Application) Host() string {
+	return a.host
 }
 
 /*
