@@ -26,8 +26,8 @@ type (
 		version   string
 		builtAt   time.Time
 		startedAt time.Time
-		host      string
 		devel     int
+		host      string
 	}
 )
 
@@ -41,6 +41,13 @@ func New(name, version, builtAt string) *Application {
 		version:   version,
 		builtAt:   t,
 		startedAt: time.Now(),
+	}
+
+	s, ok := app.LookupEnv("DEVEL")
+	if ok {
+		if devel, err := strconv.Atoi(s); err == nil {
+			app.devel = devel
+		}
 	}
 
 	return app
@@ -71,6 +78,11 @@ func (a *Application) StartedAt() time.Time {
 	return a.startedAt
 }
 
+// Devel AFAIRE.
+func (a *Application) Devel() int {
+	return a.devel
+}
+
 // LookupEnv AFAIRE.
 func (a *Application) LookupEnv(suffix string) (string, bool) {
 	return os.LookupEnv(strings.ToUpper(a.name) + "_" + suffix)
@@ -92,16 +104,6 @@ func (a *Application) OnError(err error) error {
 
 // Initialize AFAIRE.
 func (a *Application) Initialize() error {
-	s, ok := a.LookupEnv("DEVEL")
-	if ok {
-		devel, err := strconv.Atoi(s)
-		if err != nil {
-			return err
-		}
-
-		a.devel = devel
-	}
-
 	fqdn, err := fqdn.FQDN()
 	if err != nil {
 		return err
@@ -110,11 +112,6 @@ func (a *Application) Initialize() error {
 	a.host = fqdn
 
 	return nil
-}
-
-// Devel AFAIRE.
-func (a *Application) Devel() int {
-	return a.devel
 }
 
 // Host AFAIRE.
