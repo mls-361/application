@@ -26,7 +26,7 @@ type (
 		version   string
 		builtAt   time.Time
 		startedAt time.Time
-		devel     int
+		debug     int
 		host      string
 	}
 )
@@ -43,10 +43,10 @@ func New(name, version, builtAt string) *Application {
 		startedAt: time.Now(),
 	}
 
-	s, ok := app.LookupEnv("DEVEL")
+	s, ok := app.LookupEnv("DEBUG")
 	if ok {
-		if devel, err := strconv.Atoi(s); err == nil {
-			app.devel = devel
+		if debug, err := strconv.Atoi(s); err == nil {
+			app.debug = debug
 		}
 	}
 
@@ -78,9 +78,9 @@ func (a *Application) StartedAt() time.Time {
 	return a.startedAt
 }
 
-// Devel AFAIRE.
-func (a *Application) Devel() int {
-	return a.devel
+// Debug AFAIRE.
+func (a *Application) Debug() int {
+	return a.debug
 }
 
 // LookupEnv AFAIRE.
