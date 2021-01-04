@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/mls-361/fqdn"
-	"github.com/mls-361/util"
 	"github.com/mls-361/uuid"
 )
 
@@ -33,13 +32,16 @@ type (
 
 // New AFAIRE.
 func New(name, version, builtAt string) *Application {
-	t, _ := util.EpochStrToTime(builtAt, 0)
+	ts, err := strconv.ParseInt(builtAt, 0, 64)
+	if err != nil {
+		ts = 0
+	}
 
 	app := &Application{
 		id:        uuid.New(),
 		name:      name,
 		version:   version,
-		builtAt:   t,
+		builtAt:   time.Unix(ts, 0),
 		startedAt: time.Now(),
 	}
 
