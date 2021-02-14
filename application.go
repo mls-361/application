@@ -45,8 +45,7 @@ func New(name, version, builtAt string) *Application {
 		startedAt: time.Now(),
 	}
 
-	s, ok := app.LookupEnv("DEBUG")
-	if ok {
+	if s, ok := app.LookupEnv("DEBUG"); ok {
 		if debug, err := strconv.Atoi(s); err == nil {
 			app.debug = debug
 		}
